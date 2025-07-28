@@ -1,18 +1,188 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página em Branco</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Página de Entrada</title>
+
+  <!-- Meta Pixel Code -->
+  <script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', '1414953916404664');
+  fbq('track', 'PageView');
+  </script>
+  <noscript>
+    <img height="1" width="1" style="display:none"
+         src="https://www.facebook.com/tr?id=1414953916404664&ev=PageView&noscript=1" />
+  </noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
-    body {
+    html, body {
       margin: 0;
       padding: 0;
-      background-color: #ffffff;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Fundo com imagem */
+    #background-image {
+      background-image: url('https://i.postimg.cc/SsgmK3v0/Save-Clip-App-475746139-18055135565493540-8263149636373181560-n.jpg');
+      background-size: cover;
+      background-position: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+
+    .btn-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 25px;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .online-status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background-color: white;
+      border: 2px solid #25D366;
+      color: #000;
+      font-size: 20px;
+      font-weight: bold;
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.2);
+      animation: pop 0.6s ease-in-out;
+      margin-bottom: 10px;
+    }
+
+    .pulse {
+      width: 14px;
+      height: 14px;
+      background-color: #25D366;
+      border-radius: 50%;
+      animation: blink 1.2s infinite ease-in-out;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(1.3); }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .custom-btn {
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      width: 250px;
+      text-align: center;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      user-select: none;
+    }
+
+    .whatsapp-btn {
+      background-color: #25D366;
+    }
+
+    .whatsapp-btn:hover {
+      background-color: #1ebe5b;
+    }
+
+    .telegram-btn {
+      background-color: #0088cc;
+    }
+
+    .telegram-btn:hover {
+      background-color: #007ab8;
+    }
+
+    .custom-btn i {
+      font-size: 20px;
     }
   </style>
 </head>
 <body>
 
+  <div id="background-image"></div>
+
+  <div class="btn-container">
+    <div class="online-status">
+      <span class="pulse"></span>
+      <strong>Online agora</strong>
+    </div>
+
+    <button id="purchaseBtn" class="custom-btn whatsapp-btn">
+      <i class="fab fa-whatsapp"></i> Comprar WhatsApp
+    </button>
+    <button id="telegramBtn" class="custom-btn telegram-btn">
+      <i class="fab fa-telegram-plane"></i> Comprar no Telegram
+    </button>
+  </div>
+
+  <script>
+    const utmParams = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'];
+    const urlParams = new URLSearchParams(window.location.search);
+
+    utmParams.forEach(param => {
+      const value = urlParams.get(param);
+      if (value) {
+        sessionStorage.setItem(param, value);
+        localStorage.setItem(param, value);
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      function buildURL(baseURL) {
+        const utmString = utmParams.map(param => {
+          const val = sessionStorage.getItem(param) || localStorage.getItem(param);
+          return val ? `${param}=${encodeURIComponent(val)}` : null;
+        }).filter(Boolean).join('&');
+
+        return utmString ? `${baseURL}?${utmString}` : baseURL;
+      }
+
+      document.getElementById('purchaseBtn').addEventListener('click', function () {
+        fbq('track', 'Lead');
+        const finalURL = buildURL("https://mais.red/run/21146");
+        window.location.href = finalURL;
+      });
+
+      document.getElementById('telegramBtn').addEventListener('click', function () {
+        const finalURL = buildURL("https://t.me/botdamelissa_bot");
+        window.location.href = finalURL;
+      });
+    });
+  </script>
 </body>
 </html>
